@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .quiz {
+            max-width: 800px;
+            margin: 20px auto;
+            animation: fadeInUp 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('landing') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('index') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('recruiter_login') }}">Recruiter Login</a>
+            <a href="{{ url_for('recruiter_signup') }}">Recruiter Signup</a>
+        {% endif %}
+        <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+    </div>
+    <div class="quiz card">
+        <h2>Quiz for {{ job.title }}</h2>
+        <p>Complete the following quiz to proceed with your application.</p>
+        <p>TODO: Implement quiz functionality.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #ffffff;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #3182ce;
+            font-weight: 500;
+        }
+        .signup-form {
+            max-width: 400px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .signup-form h2 {
+            color: #2d3748;
+            text-align: center;
+        }
+        .signup-form input, .signup-form select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        .signup-form button {
+            background-color: #3182ce;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .signup-form button:hover {
+            background-color: #2b6cb0;
+        }
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('landing') }}">Home</a>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Signup</a>
+        <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+    </div>
+    <div class="signup-form">
+        <h2>Signup</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <select name="role" required>
+                <option value="recruiter">Recruiter</option>
+                <option value="applicant">Applicant</option>
+            </select>
+            <button type="submit">Signup</button>
+        </form>
+        <p style="text-align: center; margin-top: 10px;">
+            Already have an account? <a href="{{ url_for('login') }}" style="color: #3182ce;">Login</a>
+        </p>
+    </div>
+</body>
+</html>

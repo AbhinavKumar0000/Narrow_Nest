@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recruiter Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .job-item {
+            animation: fadeInUp 0.5s ease;
+        }
+        .toggle-applicants {
+            background: #f5f5f7;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1d1d1f;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-applicants:hover {
+            background: #e5e5ea;
+        }
+        .applicants {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 10px;
+        }
+        .applicants.show {
+            max-height: 500px;
+        }
+        .applicant-item {
+            border-top: 1px solid #e5e5ea;
+            padding: 10px 0;
+        }
+        .applicant-item:first-child {
+            border-top: none;
+        }
+        .ats-score {
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        .share-link {
+            color: #007aff;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('landing') }}">Home</a>
+        <a href="{{ url_for('index') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+    </div>
+    <div class="container">
+        <div class="job-form card">
+            <h2>Post a Job</h2>
+            <form id="jobForm">
+                <input type="text" name="title" placeholder="Job Title" required>
+                <textarea name="description" placeholder="Job Description" required></textarea>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <button type="submit">Post Job</button>
+            </form>
+        </div>
+
+        {% for data in jobs %}
+        <div class="job-item card" data-job-id="{{ data.job.id }}">
+            <h3>{{ data.job.title }}</h3>
+            <p>{{ data.job.description }}</p>
+            <p>Applicants: <span class="applicant-count">{{ data.applicant_count }}</span>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ url_for('apply', job_id=data.job.id, _external=True) | urlencode }}" target="_blank" class="share-link">Share</a>
+            </p>
+            <button class="toggle-applicants">Show Applicants</button>
+            <div class="applicants">
+                {% for applicant in data.applicants %}
+                <div class="applicant-item">
+                    <p>Email: {{ applicant.email }}</p>
+                    <p>ATS Score: <span class="ats-score">{{ applicant.ats_score if applicant.ats_score is not none else 'N/A' }}</span></p>
+                    <p>Chatbot Score: {{ applicant.chatbot_score if applicant.chatbot_score is not none else 'N/A' }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.getElementById('jobForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/post_job', {
+                method: 'POST',
+                body: new FormData(this)
+            }).then(response => response.json())
+            .then(data => {
+                alert(data.message + '\nShare this link: ' + data.link);
+                location.reload();
+            });
+        });
+
+        document.querySelectorAll('.toggle-applicants').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const applicantsDiv = this.nextElementSibling;
+                applicantsDiv.classList.toggle('show');
+                this.textContent = applicantsDiv.classList.contains('show') ? 'Hide Applicants' : 'Show Applicants';
+            });
+        });
+
+        setInterval(() => {
+            document.querySelectorAll('.job-item').forEach(job => {
+                const jobId = job.getAttribute('data-job-id');
+                fetch(`/get_applicants/${jobId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const countSpan = job.querySelector('.applicant-count');
+                        const applicantsDiv = job.querySelector('.applicants');
+                        countSpan.textContent = data.applicant_count;
+                        applicantsDiv.innerHTML = data.applicants.map(applicant => `
+                            <div class="applicant-item">
+                                <p>Email: ${applicant.email}</p>
+                                <p>ATS Score: <span class="ats-score">${applicant.ats_score || 'N/A'}</span></p>
+                                <p>Chatbot Score: ${applicant.chatbot_score || 'N/A'}</p>
+                            </div>
+                        `).join('');
+                    });
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
