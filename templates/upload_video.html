@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Video</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .upload-form {
+            max-width: 500px;
+            margin: 20px auto;
+            animation: fadeInUp 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('landing') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('index') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('recruiter_login') }}">Recruiter Login</a>
+            <a href="{{ url_for('recruiter_signup') }}">Recruiter Signup</a>
+        {% endif %}
+        <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+    </div>
+    <div class="upload-form card">
+        <h2>Upload Video</h2>
+        <p>Please upload a video response, {{ applicant.email }}.</p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="video" accept="video/*" required>
+            <button type="submit">Upload Video</button>
+        </form>
+    </div>
+</body>
+</html>

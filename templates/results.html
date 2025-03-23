@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .results {
+            max-width: 800px;
+            margin: 20px auto;
+            animation: fadeInUp 1s ease;
+        }
+        .score {
+            color: #2e7d32;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('landing') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('index') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('recruiter_login') }}">Recruiter Login</a>
+            <a href="{{ url_for('recruiter_signup') }}">Recruiter Signup</a>
+        {% endif %}
+        <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+    </div>
+    <div class="results card">
+        <h2>Application Results</h2>
+        <p>Email: {{ applicant.email }}</p>
+        <p>ATS Score: <span class="score">{{ applicant.ats_score if applicant.ats_score is not none else 'N/A' }}</span></p>
+        <p>Chatbot Score: <span class="score">{{ applicant.chatbot_score if applicant.chatbot_score is not none else 'N/A' }}</span></p>
+        <p>Video: {{ 'Uploaded' if applicant.video_path else 'Not Uploaded' }}</p>
+        <p>Thank you for applying! We'll be in touch soon.</p>
+    </div>
+</body>
+</html>

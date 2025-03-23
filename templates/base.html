@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='scripts.js') }}" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Recruitment System</h1>
+        <nav>
+            {% if current_user.is_authenticated %}
+                <p>Welcome, {{ current_user.username }} | <a href="{{ url_for('logout') }}">Logout</a></p>
+            {% else %}
+                <a href="{{ url_for('recruiter_login') }}">Recruiter Login</a>
+                <a href="{{ url_for('recruiter_signup') }}">Recruiter Signup</a>
+            {% endif %}
+            <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

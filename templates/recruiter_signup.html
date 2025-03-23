@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recruiter Signup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .signup-form {
+            max-width: 400px;
+            margin: 40px auto;
+            animation: fadeInUp 1s ease;
+        }
+        .signup-form p {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .signup-form a {
+            color: #007aff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('landing') }}">Home</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('index') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('recruiter_login') }}">Recruiter Login</a>
+            <a href="{{ url_for('recruiter_signup') }}">Recruiter Signup</a>
+        {% endif %}
+        <a href="{{ url_for('job_list') }}">Browse Jobs</a>
+    </div>
+    <div class="signup-form card">
+        <h2>Recruiter Signup</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Signup</button>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('recruiter_login') }}">Login</a></p>
+    </div>
+</body>
+</html>
